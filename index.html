@@ -4,8 +4,25 @@
     <title>Acceleration Example</title>
 
     <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script type="text/javascript" charset="utf-8">
+	var angle_x = 0.0;
+	var angle_y = 0.0;
+	var angle_z = 0.0;
+        var myMemsVar = setInterval(function(){timer_myMemsTimer()},1000);
 
+	function timer_myMemsTimer()
+	{
+		$.ajax({
+			type: 'POST',
+			url: 'http://192.168.1.106:8888/',
+			data: '{"name":"angle","angle_x":'+angle_x+',"angle_y":'+angle_y+',"angle_z":'+angle_z+'}', // or JSON.stringify ({name: 'jonas'}),
+			success: function (data) { console.log('data: ' + data); },
+			contentType: "application/json",
+			dataType: 'json'
+		});
+	}
+	
     // The watch id references the current `watchAcceleration`
     var watchID = null;
 
@@ -24,7 +41,7 @@
     function startWatch() {
 
         // Update acceleration every 3 seconds
-        var options = { frequency: 3000 };
+        var options = { frequency: 100 };
 
         watchID = navigator.accelerometer.watchAcceleration(onSuccess, onError, options);
     }
@@ -46,6 +63,9 @@
                             'Acceleration Y: ' + acceleration.y         + '<br />' +
                             'Acceleration Z: ' + acceleration.z         + '<br />' +
                             'Timestamp: '      + acceleration.timestamp + '<br />';
+	angle_x = acceleration.x;
+	angle_y = acceleration.y;
+	angle_z = acceleration.z;
     }
 
     // onError: Failed to get the acceleration
